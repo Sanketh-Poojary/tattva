@@ -3,59 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coming Soon | [Your Chosen Name]</title>
+    <title>Tattva | Coming Soon</title>
+    
+    <!-- Load Tailwind CSS for layout utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for a sleek, modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
     <style>
-        /* Reset default margins and set up a clean, modern font */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Center everything on the screen with a dark, sleek background */
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #121212;
-            color: #ffffff;
-            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            background-color: #050505; /* Deep rich dark background */
+            margin: 0;
+            overflow: hidden; /* Prevent scrolling from floating orbs */
         }
 
-        .container {
-            padding: 2rem;
+        /* Glassmorphism Panel CSS */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            /* Subtle inner glow */
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.02), 0 8px 32px 0 rgba(0,0,0,0.4);
         }
 
-        h1 {
-            font-size: 4rem;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            color: #4CAF50; /* A nice nature-inspired green */
+        /* Text Gradients */
+        .text-gradient {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .title-gradient {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        h2 {
-            font-size: 1.5rem;
-            font-weight: 300;
-            color: #aaaaaa;
-            margin-bottom: 20px;
+        /* Floating Orbs Animations */
+        @keyframes float1 {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
         }
 
-        p {
-            font-size: 1rem;
-            color: #777777;
+        @keyframes float2 {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-50px, 30px) scale(1.2); }
+            66% { transform: translate(20px, -20px) scale(0.8); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        @keyframes float3 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, 40px) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+
+        .orb-1 {
+            animation: float1 15s infinite ease-in-out;
+            background: radial-gradient(circle at center, #10b981 0%, transparent 60%);
+        }
+        .orb-2 {
+            animation: float2 18s infinite ease-in-out;
+            background: radial-gradient(circle at center, #3b82f6 0%, transparent 60%);
+        }
+        .orb-3 {
+            animation: float3 20s infinite ease-in-out;
+            background: radial-gradient(circle at center, #8b5cf6 0%, transparent 60%);
+        }
+
+        /* Input specific glass styling */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
-<body>
+<body class="relative min-h-screen flex items-center justify-center">
 
-    <div class="container">
-        <!-- Replace 'Jiva' with the name you both select -->
-        <h2>Jiva</h2>
-        <h1>Coming Soon</h1>
-        <p>The ultimate botanical and zoological naming engine is under construction.</p>
+    <!-- Background Animated Orbs -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <!-- Top Left Emerald/Green Orb -->
+        <div class="orb-1 absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full opacity-60 blur-[80px]"></div>
+        
+        <!-- Bottom Right Blue Orb -->
+        <div class="orb-2 absolute -bottom-[10%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-50 blur-[100px]"></div>
+        
+        <!-- Center Purple Orb -->
+        <div class="orb-3 absolute top-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full opacity-40 blur-[90px]"></div>
     </div>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 w-full max-w-2xl px-6">
+        
+        <!-- Glassmorphism Card -->
+        <div class="glass-card rounded-3xl p-10 md:p-14 text-center">
+            
+            <!-- Brand Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-8">
+                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                <span class="text-white/80 text-sm font-semibold tracking-widest uppercase">Tattva</span>
+            </div>
+
+            <!-- Headers -->
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight title-gradient">
+                Coming Soon
+            </h1>
+            
+            <p class="text-lg md:text-xl text-white/70 mb-10 font-light leading-relaxed max-w-lg mx-auto">
+                Unveiling the essence of nature. The ultimate scientific naming engine for global flora and fauna is almost here.
+            </p>
+
+            <!-- Interactive Elements -->
+            <div class="max-w-md mx-auto">
+                <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); alert('Thanks for subscribing! We will notify you when Tattva launches.');">
+                    <input 
+                        type="email" 
+                        placeholder="Enter your email address" 
+                        required
+                        class="glass-input flex-1 px-5 py-3.5 rounded-xl text-sm md:text-base backdrop-blur-sm"
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-6 py-3.5 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)]"
+                    >
+                        Notify Me
+                    </button>
+                </form>
+                
+                <p class="text-white/40 text-xs mt-4">
+                    Be the first to know when we launch. No spam, just the essence.
+                </p>
+            </div>
+
+        </div>
+    </main>
 
 </body>
 </html>
