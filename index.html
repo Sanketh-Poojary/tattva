@@ -3,159 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tattva | Coming Soon </title>
-    
-    <!-- Load Tailwind CSS for layout utilities -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts for a sleek, modern typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-
+    <title>Tattva - Scientific Name Explorer</title>
     <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: #050505; /* Deep rich dark background */
-            margin: 0;
-            overflow: hidden; /* Prevent scrolling from floating orbs */
-        }
-
-        /* Glassmorphism Panel CSS */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            /* Subtle inner glow */
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.02), 0 8px 32px 0 rgba(0,0,0,0.4);
-        }
-
-        /* Text Gradients */
-        .text-gradient {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #eef7f2; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            color: #333;
         }
         
-        .title-gradient {
-            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .tattva-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            border-top: 6px solid #2e7d32; 
         }
-
-        /* Floating Orbs Animations */
-        @keyframes float1 {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        @keyframes float2 {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(-50px, 30px) scale(1.2); }
-            66% { transform: translate(20px, -20px) scale(0.8); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        @keyframes float3 {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, 40px) scale(1.1); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-
-        .orb-1 {
-            animation: float1 15s infinite ease-in-out;
-            background: radial-gradient(circle at center, #10b981 0%, transparent 60%);
-        }
-        .orb-2 {
-            animation: float2 18s infinite ease-in-out;
-            background: radial-gradient(circle at center, #3b82f6 0%, transparent 60%);
-        }
-        .orb-3 {
-            animation: float3 20s infinite ease-in-out;
-            background: radial-gradient(circle at center, #8b5cf6 0%, transparent 60%);
-        }
-
-        /* Input specific glass styling */
-        .glass-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s ease;
-        }
-        .glass-input:focus {
+        
+        h1 { color: #2e7d32; margin-bottom: 0.5rem; font-size: 2.2rem; }
+        p.subtitle { color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
             outline: none;
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+            transition: border-color 0.3s;
+            background-color: white;
         }
-        .glass-input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+        input:focus, select:focus { border-color: #2e7d32; }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
+        button:hover { background-color: #1b5e20; }
+        
+        #result-box {
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 8px;
+            display: none; 
+            text-align: left;
+        }
+        .success { background-color: #f1f8e9; border: 1px solid #c5e1a5; }
+        .error { background-color: #ffebee; border: 1px solid #ffcdd2; color: #c62828; text-align: center; }
+        
+        .result-label { font-size: 0.75rem; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+        .result-value { font-size: 1.1rem; margin-bottom: 5px; color: #222; }
+        .sci-name { font-style: italic; font-weight: bold; color: #2e7d32; font-size: 1.3rem; }
     </style>
 </head>
-<body class="relative min-h-screen flex items-center justify-center">
+<body>
 
-    <!-- Background Animated Orbs -->
-    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <!-- Top Left Emerald/Green Orb -->
-        <div class="orb-1 absolute -top-[10%] -left-[10%] w-[50vw] h-[50vw] rounded-full opacity-60 blur-[80px]"></div>
+    <div class="tattva-card">
+        <h1>Tattva</h1>
+        <p class="subtitle">Discover the scientific names of nature.</p>
         
-        <!-- Bottom Right Blue Orb -->
-        <div class="orb-2 absolute -bottom-[10%] -right-[10%] w-[60vw] h-[60vw] rounded-full opacity-50 blur-[100px]"></div>
+        <input type="text" id="searchInput" placeholder="e.g., Mango, Tiger, Sunflower..." onkeydown="if(event.key === 'Enter'){ findName(); }">
         
-        <!-- Center Purple Orb -->
-        <div class="orb-3 absolute top-[20%] left-[20%] w-[40vw] h-[40vw] rounded-full opacity-40 blur-[90px]"></div>
+        <!-- New Category Dropdown -->
+        <select id="categorySelect">
+            <option value="">🌍 All Categories</option>
+            <option value="6">🌿 Plants & Fruits</option>
+            <option value="1">🐅 Animals & Insects</option>
+            <option value="5">🍄 Fungi & Mushrooms</option>
+        </select>
+
+        <button onclick="findName()">Search Organism</button>
+
+        <div id="result-box"></div>
     </div>
 
-    <!-- Main Content Container -->
-    <main class="relative z-10 w-full max-w-2xl px-6">
-        
-        <!-- Glassmorphism Card -->
-        <div class="glass-card rounded-3xl p-10 md:p-14 text-center">
-            
-            <!-- Brand Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-8">
-                <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-                <span class="text-white/80 text-sm font-semibold tracking-widest uppercase">Tattva</span>
-            </div>
+    <script>
+        async function findName() {
+            const query = document.getElementById('searchInput').value.trim();
+            const category = document.getElementById('categorySelect').value;
+            const resultBox = document.getElementById('result-box');
 
-            <!-- Headers -->
-            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tight title-gradient">
-                Coming Soon
-            </h1>
-            
-            <p class="text-lg md:text-xl text-white/70 mb-10 font-light leading-relaxed max-w-lg mx-auto">
-                Unveiling the essence of nature. The ultimate scientific naming engine for global flora and fauna is almost here.
-            </p>
+            if (!query) {
+                resultBox.style.display = 'block';
+                resultBox.className = 'error';
+                resultBox.innerHTML = "Please enter a name before searching.";
+                return;
+            }
 
-            <!-- Interactive Elements -->
-            <div class="max-w-md mx-auto">
-                <form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault(); alert('Thanks for subscribing! We will notify you when Tattva launches.');">
-                    <input 
-                        type="email" 
-                        placeholder="Enter your email address" 
-                        required
-                        class="glass-input flex-1 px-5 py-3.5 rounded-xl text-sm md:text-base backdrop-blur-sm"
-                    >
-                    <button 
-                        type="submit" 
-                        class="px-6 py-3.5 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-300 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)]"
-                    >
-                        Notify Me
-                    </button>
-                </form>
+            resultBox.style.display = 'block';
+            resultBox.className = 'success';
+            resultBox.innerHTML = "Searching nature's database...";
+
+            try {
+                // We start with the base URL
+                let apiUrl = `https://api.gbif.org/v1/species/search?q=${encodeURIComponent(query)}&limit=1`;
                 
-                <p class="text-white/40 text-xs mt-4">
-                    Be the first to know when we launch. No spam, just the essence.
-                </p>
-            </div>
+                // If the user selected a category, we add the kingdom key to the URL
+                if (category) {
+                    apiUrl += `&kingdomKey=${category}`;
+                }
 
-        </div>
-    </main>
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (!data.results || data.results.length === 0) {
+                    resultBox.className = 'error';
+                    resultBox.innerHTML = `No scientific name found for "<strong>${query}</strong>" in this category.`;
+                } else {
+                    const organism = data.results[0];
+                    resultBox.className = 'success';
+                    resultBox.innerHTML = `
+                        <div class="result-label">Common Name Searched</div>
+                        <div class="result-value">${query}</div>
+                        
+                        <div class="result-label">Scientific Name</div>
+                        <div class="result-value sci-name">${organism.scientificName}</div>
+                        
+                        <div class="result-label">Taxonomic Rank</div>
+                        <div class="result-value">${organism.rank || 'Unknown'}</div>
+                        
+                        <div class="result-label">Kingdom</div>
+                        <div class="result-value">${organism.kingdom || 'Unknown'}</div>
+                    `;
+                }
+            } catch (error) {
+                resultBox.className = 'error';
+                resultBox.innerHTML = "A network error occurred. Please check your internet connection.";
+            }
+        }
+    </script>
 
 </body>
 </html>
