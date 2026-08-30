@@ -4,33 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tattva - Scientific Name Explorer</title>
+    
     <style>
+        /* Reset and Base Styles */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #eef7f2; 
+            background-color: #eef7f2; /* Light nature green background */
             display: flex; 
             justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
+            align-items: flex-start; /* Changed to flex-start so it can scroll if results are long */
+            min-height: 100vh; 
             color: #333;
+            padding: 2rem 1rem;
         }
         
+        /* The Main Card */
         .tattva-card {
             background: white;
             padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            width: 90%;
+            width: 100%;
             max-width: 450px;
             text-align: center;
-            border-top: 6px solid #2e7d32; 
+            border-top: 6px solid #2e7d32; /* Forest green accent */
         }
         
         h1 { color: #2e7d32; margin-bottom: 0.5rem; font-size: 2.2rem; }
         p.subtitle { color: #666; margin-bottom: 2rem; font-size: 0.95rem; }
         
-        input, select {
+        /* Inputs and Buttons */
+        input {
             width: 100%;
             padding: 12px;
             font-size: 16px;
@@ -41,7 +46,7 @@
             transition: border-color 0.3s;
             background-color: white;
         }
-        input:focus, select:focus { border-color: #2e7d32; }
+        input:focus { border-color: #2e7d32; }
         
         button {
             width: 100%;
@@ -57,6 +62,7 @@
         }
         button:hover { background-color: #1b5e20; }
         
+        /* Results Box States */
         #result-box {
             margin-top: 1.5rem;
             padding: 1.2rem;
@@ -64,12 +70,52 @@
             display: none; 
             text-align: left;
         }
-        .success { background-color: #f1f8e9; border: 1px solid #c5e1a5; }
-        .error { background-color: #ffebee; border: 1px solid #ffcdd2; color: #c62828; text-align: center; }
         
+        .success-box { background-color: #f9fbf9; border: 1px solid #c5e1a5; padding: 1rem; border-radius: 8px; }
+        .error { background-color: #ffebee; border: 1px solid #ffcdd2; color: #c62828; text-align: center; padding: 1rem; border-radius: 8px;}
+        
+        /* Typography for Results */
         .result-label { font-size: 0.75rem; color: #777; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
-        .result-value { font-size: 1.1rem; margin-bottom: 5px; color: #222; }
-        .sci-name { font-style: italic; font-weight: bold; color: #2e7d32; font-size: 1.3rem; }
+        .result-value { font-size: 1.1rem; margin-bottom: 5px; color: #222; text-transform: capitalize; }
+        .sci-name { font-style: italic; font-weight: bold; color: #2e7d32; font-size: 1.3rem; text-transform: none; }
+        
+        /* Multiple Results Styling */
+        .result-item {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        
+        /* Rank Badge */
+        .match-rank {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #2e7d32; /* Green for alternative matches */
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .match-rank.top-match { background-color: #f57c00; } /* Orange for the #1 match */
+
+        /* Responsive Organism Image */
+        .organism-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* Keeps image proportions clean without stretching */
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
@@ -80,14 +126,6 @@
         
         <input type="text" id="searchInput" placeholder="e.g., Mango, Tiger, Sunflower..." onkeydown="if(event.key === 'Enter'){ findName(); }">
         
-        <!-- New Category Dropdown -->
-        <select id="categorySelect">
-            <option value="">🌍 All Categories</option>
-            <option value="6">🌿 Plants & Fruits</option>
-            <option value="1">🐅 Animals & Insects</option>
-            <option value="5">🍄 Fungi & Mushrooms</option>
-        </select>
-
         <button onclick="findName()">Search Organism</button>
 
         <div id="result-box"></div>
@@ -96,9 +134,9 @@
     <script>
         async function findName() {
             const query = document.getElementById('searchInput').value.trim();
-            const category = document.getElementById('categorySelect').value;
             const resultBox = document.getElementById('result-box');
 
+            // Handle empty search
             if (!query) {
                 resultBox.style.display = 'block';
                 resultBox.className = 'error';
@@ -106,41 +144,55 @@
                 return;
             }
 
+            // Show loading state
             resultBox.style.display = 'block';
-            resultBox.className = 'success';
+            resultBox.className = 'success-box';
             resultBox.innerHTML = "Searching nature's database...";
 
             try {
-                // We start with the base URL
-                let apiUrl = `https://api.gbif.org/v1/species/search?q=${encodeURIComponent(query)}&limit=1`;
+                // The /autocomplete endpoint prioritizes exact and most popular matches first
+                let apiUrl = `https://api.inaturalist.org/v1/taxa/autocomplete?q=${encodeURIComponent(query)}&per_page=5`;
                 
-                // If the user selected a category, we add the kingdom key to the URL
-                if (category) {
-                    apiUrl += `&kingdomKey=${category}`;
-                }
-
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
+                // If nothing is found
                 if (!data.results || data.results.length === 0) {
                     resultBox.className = 'error';
-                    resultBox.innerHTML = `No scientific name found for "<strong>${query}</strong>" in this category.`;
+                    resultBox.innerHTML = `No scientific name found for "<strong>${query}</strong>".`;
                 } else {
-                    const organism = data.results[0];
-                    resultBox.className = 'success';
-                    resultBox.innerHTML = `
-                        <div class="result-label">Common Name Searched</div>
-                        <div class="result-value">${query}</div>
+                    let htmlContent = '';
+                    
+                    // Loop through all results and create a list
+                    data.results.forEach((organism, index) => {
+                        // Extract image safely
+                        const imageUrl = organism.default_photo ? organism.default_photo.medium_url : '';
+                        const imageHtml = imageUrl ? `<img src="${imageUrl}" alt="${organism.name}" class="organism-img">` : '';
                         
-                        <div class="result-label">Scientific Name</div>
-                        <div class="result-value sci-name">${organism.scientificName}</div>
-                        
-                        <div class="result-label">Taxonomic Rank</div>
-                        <div class="result-value">${organism.rank || 'Unknown'}</div>
-                        
-                        <div class="result-label">Kingdom</div>
-                        <div class="result-value">${organism.kingdom || 'Unknown'}</div>
-                    `;
+                        // Add a special badge for the first/best match
+                        const isTopMatch = index === 0;
+                        const badgeClass = isTopMatch ? 'match-rank top-match' : 'match-rank';
+                        const badgeText = isTopMatch ? 'Closest Match' : `Result #${index + 1}`;
+
+                        htmlContent += `
+                            <div class="result-item">
+                                <div class="${badgeClass}">${badgeText}</div>
+                                ${imageHtml}
+                                <div class="result-label">Common Name</div>
+                                <div class="result-value">${organism.preferred_common_name || query}</div>
+                                
+                                <div class="result-label">Scientific Name</div>
+                                <div class="result-value sci-name">${organism.name}</div>
+                                
+                                <div class="result-label">Taxonomic Rank</div>
+                                <div class="result-value">${organism.rank || 'Unknown'}</div>
+                            </div>
+                        `;
+                    });
+
+                    // Render final HTML
+                    resultBox.className = 'success-box';
+                    resultBox.innerHTML = htmlContent;
                 }
             } catch (error) {
                 resultBox.className = 'error';
@@ -148,6 +200,5 @@
             }
         }
     </script>
-
 </body>
 </html>
